@@ -79,6 +79,22 @@ main() {
     }
 }
 
+/*
+ * Check for ampersand as the last argument
+ */
+int should_block(char **args) {
+    int i;
+
+    for(i = 0; args[i] != NULL; i++) {
+        if(args[i][0] == '&') {
+            free(args[i]);
+            args[i] = NULL;
+            return 0;
+        } 
+    }
+    return 1;
+}
+
 /* 
  * Check for internal commands
  * Returns true if there is more to do, false otherwise 
