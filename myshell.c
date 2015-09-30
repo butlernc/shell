@@ -188,7 +188,7 @@ int do_command(char **args, int in, int out) {
 int execute_pipe(char **args, int block) {
 
     int in = 0;
-    
+    int child_id = 0;
     char **tmp_args = args;
     char **ptr;
     // loop over args, set each | to NULL
@@ -215,7 +215,6 @@ int execute_pipe(char **args, int block) {
     child_id = do_command(tmp_args, in, 1); 
     if(child_id < 0) {
         printf("syntax error\n");
-        continue;
     }
 
     return 0;
