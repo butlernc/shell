@@ -64,7 +64,20 @@ main() {
             execute_pipe(args, block);
         }
 
+        child_id = do_command(args, 0, 0);
+        if(child_id < 0) {
+            printf("syntax error\n");
+            continue;
+        }
+
+        // Wait for the child process to complete, if necessary
+        if(block) {
+            printf("Waiting for child, pid = %d\n", child_id);
+            result = waitpid(child_id, &status, 0);
+        } 
+
     }
+}
 
 /* 
  * Check for internal commands
@@ -174,50 +187,38 @@ int do_command(char **args, int in, int out) {
 
 int execute_pipe(char **args, int block) {
 
-        int in = 0;
-        
-        char **tmp_args = args;
-        char **ptr;
-        // loop over args, set each | to NULL
-        for(ptr = args; *ptr != NULL; ptr++) {
-            //printf("tmpargs[0]: %s [1]: %s [2]: %s\n", tmp_args[0], tmp_args[1], tmp_args[2]);
-            if(strcmp(*ptr, "|") == 0) {
-                free(*ptr);
-                *ptr = NULL;
-                // do stuff with tmp_args as your new "args"
-                int pipefd[2];
-                pipe(pipefd);
-                
-                child_id = do_command(tmp_args, in, pipefd[1]);
-                close(pipefd[1]);
-                if(child_id < 0) {
-                    printf("syntax error\n");
-                    continue;
-                }    
-                in = pipefd[0];
-                tmp_args = ptr + 1;
-            }
+    int in = 0;
+    
+    char **tmp_args = args;
+    char **ptr;
+    // loop over args, set each | to NULL
+    for(ptr = args; *ptr != NULL; ptr++) {
+        //printf("tmpargs[0]: %s [1]: %s [2]: %s\n", tmp_args[0], tmp_args[1], tmp_args[2]);
+        if(strcmp(*ptr, "|") == 0) {
+            free(*ptr);
+            *ptr = NULL;
+            // do stuff with tmp_args as your new "args"
+            int pipefd[2];
+            pipe(pipefd);
+            
+            child_id = do_command(tmp_args, in, pipefd[1]);
+            close(pipefd[1]);
+            if(child_id < 0) {
+                printf("syntax error\n");
+                continue;
+            }    
+            in = pipefd[0];
+            tmp_args = ptr + 1;
         }
-        //printf("tmpargs[0]: %s [1]: %s\n", tmp_args[0], tmp_args[1]);
-        child_id = do_command(tmp_args, in, 1); 
-        if(child_id < 0) {
-            printf("syntax error\n");
-            continue;
-        }    
-    } else {
-        child_id = do_command(args, 0, 0);
-        if(child_id < 0) {
-            printf("syntax error\n");
-            continue;
-        }    
+    }
+    //printf("tmpargs[0]: %s [1]: %s\n", tmp_args[0], tmp_args[1]);
+    child_id = do_command(tmp_args, in, 1); 
+    if(child_id < 0) {
+        printf("syntax error\n");
+        continue;
     }
 
-    // Wait for the child process to complete, if necessary
-    if(block) {
-        printf("Waiting for child, pid = %d\n", child_id);
-        result = waitpid(child_id, &status, 0);
-    }
-    
+    return 0;
 }
 
 int check_for_pipes(char **args) {
