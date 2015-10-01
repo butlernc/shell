@@ -258,7 +258,7 @@ int redirect_output(char **args, char **output_filename) {
             // Get the filename 
             if(args[i+1] != NULL) {
                 *output_filename = args[i+1];
-                printf(output_filename);
+                printf(*output_filename);
             } else {
                 return -1;
             }
