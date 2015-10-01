@@ -210,15 +210,12 @@ int do_command(char **args, int in, int out, int pipe, int block) {
     int result;
     pid_t child_id;
 
-    if(block == 0) { //watch out for the zombies
-        printf("& was called \n");
-        sa.sa_handler = delete_zombies;
-        memset(&sa, 0, sizeof(sa));
+    sa.sa_handler = delete_zombies;
+    memset(&sa, 0, sizeof(sa));
 
-        if(sigaction(SIGCHLD, &sa, 0)) {
-            perror("sigaction");
-            return 1;
-        }
+    if(sigaction(SIGCHLD, &sa, 0)) {
+        perror("sigaction");
+        return 1;
     }
 
     // Fork the child process
