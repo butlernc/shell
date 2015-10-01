@@ -197,7 +197,7 @@ int do_command(char **args, int in, int out) {
         printf("%s \n", args[0]);
         // Execute the command
         result = execvp(args[0], args);
-        printf("results: %d \n", results);
+        printf("results: %d \n", result);
 
         exit(-1);
     }else{
