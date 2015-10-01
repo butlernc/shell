@@ -183,14 +183,20 @@ int do_command(char **args, int in, int out) {
         //     dup2(in, 0); 
         //     close(in);
         // }
-        if(input)
+        if(input) {
             freopen(input_filename, "r", stdin);
-        if(output)
+        }           
+        if(output) {
             freopen(output_filename, "w+", stdout);
-        if(append)
+        }
+        if(append) {
             freopen(output_filename, "a", stdout);
-        // Execute the command
+
+        }
+
+
         printf("append: %d \n", append);
+        // Execute the command
         result = execvp(args[0], args);
 
         exit(0);
