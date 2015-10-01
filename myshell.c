@@ -236,6 +236,7 @@ int do_command(char **args, int in, int out, int pipe) {
             freopen(output_filename, "a", stdout);
 
         // Execute the command
+        printf("args: %s \n", args[1]);
         result = execvp(args[0], args);
 
         exit(-1);
