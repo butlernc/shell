@@ -64,7 +64,7 @@ main() {
             execute_pipe(args, block);
         }
 
-        child_id = do_command(args, 0, 0);
+        child_id = do_command(args, 0, 0, 0);
         if(child_id < 0) {
             printf("syntax error\n");
             continue;
@@ -109,7 +109,7 @@ int internal_command(char **args) {
 /* 
  * Do the command
  */
-int do_command(char **args, int in, int out) {
+int do_command(char **args, int in, int out, int pipe) {
     char *input_filename, *output_filename;
     // Check for redirected input
     int input = redirect_input(args, &input_filename);
@@ -198,10 +198,17 @@ int do_command(char **args, int in, int out) {
         // Execute the command
         result = execvp(args[0], args);
 
+        if(pipe) { //this command used a pipe
+            close(fd[0])
+        }
+            
         fclose(fp);
 
         exit(0);
     }else{
+        if(pipe) { //this command used a pipe
+            close(fd[1]);
+        }
         return child_id;
     }
     return result;
@@ -209,7 +216,7 @@ int do_command(char **args, int in, int out) {
 
 int execute_pipe(char **args, int block) {
 
-    int in = 0;
+        int in = 0;
     int child_id = 0;
     char **tmp_args = args;
     char **ptr;
@@ -223,7 +230,7 @@ int execute_pipe(char **args, int block) {
             int pipefd[2];
             pipe(pipefd);
             
-            child_id = do_command(tmp_args, in, pipefd[1]);
+            child_id = do_command(tmp_args, in, pipefd[1], 1);
             close(pipefd[1]);
             if(child_id < 0) {
                 printf("syntax error\n");
@@ -235,7 +242,7 @@ int execute_pipe(char **args, int block) {
     }
 
     //printf("tmpargs[0]: %s [1]: %s\n", tmp_args[0], tmp_args[1]);
-    child_id = do_command(tmp_args, in, 1); 
+    child_id = do_command(tmp_args, in, 1, 1); 
     if(child_id < 0) {
         printf("syntax error\n");
     }
