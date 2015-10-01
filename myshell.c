@@ -255,7 +255,7 @@ int do_command(char **args, int in, int out, int pipe, int block) {
         exit(1);
 printf("args: %s \n", args[1]);
     }else {
-        kill(0, SIGKILL);
+        
         return child_id;
     }
 
