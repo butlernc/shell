@@ -229,7 +229,9 @@ int execute_pipe(char **args, int block) {
             pipe(pipefd);
 
             child_id = do_command(tmp_args, in, pipefd[1], 1);
-            close(pipefd[1]);
+            printf("Waiting for child, pid = %d\n", child_id);
+            result = waitpid(child_id, &status, 0);
+            //close(pipefd[1]);
             if(child_id < 0) {
                 printf("syntax error\n");
                 continue;
