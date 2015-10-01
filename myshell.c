@@ -229,7 +229,7 @@ int execute_pipe(char **args, int block) {
             pipe(pipefd);
 
             child_id = do_command(tmp_args, in, pipefd[1], 1);
-            //close(pipefd[1]);
+            close(pipefd[1]);
             if(child_id < 0) {
                 printf("syntax error\n");
                 continue;
@@ -245,7 +245,7 @@ int execute_pipe(char **args, int block) {
         printf("syntax error\n");
     }
 
-    return 0;
+    return child_id;
 }
 
 int check_for_pipes(char **args) {
