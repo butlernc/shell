@@ -51,9 +51,10 @@ main() {
     // Set up the signal handler
     //sigset(SIGCHLD, sig_handler);
 
-    sa.sa_handler = delete_zombies;
-    memset(&sa, 0, sizeof(sa));
 
+    memset(&sa, 0, sizeof(sa));
+    sa.sa_handler = delete_zombies;
+    
     if(sigaction(SIGCHLD, &sa, 0)) {
         perror("sigaction");
         return 1;
