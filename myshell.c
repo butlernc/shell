@@ -203,7 +203,7 @@ int do_command(char **args, int in, int out, int pipe) {
             
         fclose(fp);
 
-        exit(0);
+        exit(-1);
 
     }else{
         return child_id;
@@ -245,7 +245,7 @@ int execute_pipe(char **args, int block) {
         }
     }
 
-    //printf("tmpargs[0]: %s [1]: %s\n", tmp_args[0], tmp_args[1]);
+    printf("tmpargs[0]: %s [1]: %s\n", tmp_args[0], tmp_args[1]);
     child_id = do_command(tmp_args, in, 1, 1); 
     if(child_id < 0) {
         printf("syntax error\n");
