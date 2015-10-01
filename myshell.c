@@ -211,7 +211,7 @@ int do_command(char **args, int in, int out, int pipe, int block) {
     pid_t child_id;
 
     if(block == 0) { //watch out for the zombies
-        printf("& was called");
+        printf("& was called \n");
         sa.sa_handler = delete_zombies;
         memset(&sa, 0, sizeof(sa));
 
@@ -359,6 +359,7 @@ int check_append(char **args, char **output_filename) {
 }
 
 void delete_zombies(void) {
+    printf("delete_zombies called \n");
     while (waitpid(-1, NULL, WNOHANG) > 0){
         printf("KILLED");
     }
