@@ -29,6 +29,8 @@ void sig_handler(int signal) {
 }
 
 sigjmp_buf env;
+struct sigaction sa;
+void delete_zombies(void);
 
 /*
  * The main shell function
@@ -45,9 +47,7 @@ main() {
     int status;
     char *output_filename;
     char *input_filename;
-    struct sigaction sa;
     
-    void delete_zombies(void);
     // Set up the signal handler
     //sigset(SIGCHLD, sig_handler);
 
