@@ -199,7 +199,7 @@ int do_command(char **args, int in, int out) {
         // Execute the command
         result = execvp(args[0], args);
 
-        exit(-1);
+        exit(0);
     }else{
         printf("parent process \n");
     }
