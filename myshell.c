@@ -194,7 +194,7 @@ int do_command(char **args, int in, int out) {
             freopen(output_filename, "w+", stdout);
         if(append)
             freopen(output_filename, "a", stdout);
-
+        printf("%s \n", args[0]);
         // Execute the command
         result = execvp(args[0], args);
 
