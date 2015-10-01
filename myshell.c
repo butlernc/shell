@@ -51,6 +51,14 @@ main() {
     // Set up the signal handler
     //sigset(SIGCHLD, sig_handler);
 
+    sa.sa_handler = delete_zombies;
+    memset(&sa, 0, sizeof(sa));
+
+    if(sigaction(SIGCHLD, &sa, 0)) {
+        perror("sigaction");
+        return 1;
+    }
+
     // Loop forever
     while(1) {
 
@@ -209,14 +217,6 @@ int do_command(char **args, int in, int out, int pipe, int block) {
   
     int result;
     pid_t child_id;
-
-    sa.sa_handler = delete_zombies;
-    memset(&sa, 0, sizeof(sa));
-
-    if(sigaction(SIGCHLD, &sa, 0)) {
-        perror("sigaction");
-        return 1;
-    }
 
     // Fork the child process
     child_id = fork();
