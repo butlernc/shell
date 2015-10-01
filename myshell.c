@@ -183,7 +183,7 @@ int do_command(char **args, int in, int out) {
         //     dup2(in, 0); 
         //     close(in);
         // }
-        int fp;
+        FILE* fp;
         if(input) {
             fp=freopen(input_filename, "r", stdin);
         }           
