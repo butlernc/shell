@@ -178,12 +178,12 @@ int do_command(char **args, int in, int out, int pipe) {
         
         if(pipe) {
             if(out != 1) {
-                dup2(out, 1);
-                close(out);
+                dup2(1, out);
+                //close(out);
             }
             if(in != 0) {
-                dup2(in, 0); 
-                close(in);
+                dup2(0, in); 
+                //close(in);
             }
         }
 
@@ -200,7 +200,11 @@ int do_command(char **args, int in, int out, int pipe) {
 
         // Execute the command
         result = execvp(args[0], args);
-            
+        if(pipe) {
+            if(out != 1) {
+                close(out);
+            }
+        }    
         fclose(fp);
 
         exit(-1);
@@ -212,7 +216,7 @@ int do_command(char **args, int in, int out, int pipe) {
 }
 
 int execute_pipe(char **args, int block) {
-
+    printf("excuting_pipe \n");
         int in = 0;
     int child_id = 0;
     char **tmp_args = args;
@@ -226,7 +230,7 @@ int execute_pipe(char **args, int block) {
             // do stuff with tmp_args as your new "args"
             int pipefd[2];
             pipe(pipefd);
-
+            printf("pipe_fd[0]: %d", pipefd[0]);
             child_id = do_command(tmp_args, in, pipefd[1], 1);
 
 
