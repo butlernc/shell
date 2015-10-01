@@ -13,6 +13,8 @@
 #include <errno.h>
 #include <signal.h>
 #include <string.h>
+#include <sys/wait.h>
+#include <setjmp.h> 
 
 extern char **getaline();
 
@@ -42,6 +44,7 @@ main() {
     char *output_filename;
     char *input_filename;
     struct sigaction sa;
+    sigjmp_buf env;
 
     // Set up the signal handler
     //sigset(SIGCHLD, sig_handler);
