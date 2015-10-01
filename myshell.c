@@ -183,19 +183,22 @@ int do_command(char **args, int in, int out) {
         //     dup2(in, 0); 
         //     close(in);
         // }
+        int fp;
         if(input) {
-            freopen(input_filename, "r", stdin);
+            fp=freopen(input_filename, "r", stdin);
         }           
         if(output) {
-            freopen(output_filename, "w+", stdout);
+            fp=freopen(output_filename, "w+", stdout);
         }
         if(append) {
-            freopen(output_filename, "a", stdout);
+            fp=freopen(output_filename, "a+", stdout);
 
         }
 
         // Execute the command
         result = execvp(args[0], args);
+
+        fclose(fp)
 
         exit(0);
     }else{
