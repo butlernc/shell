@@ -232,6 +232,7 @@ int do_command(char **args, int in, int out, int pipe, int block) {
     }
 
     if(child_id == 0) {
+
         // Set up redirection in the child process
         if(out != 1) {
             dup2(out, 1);

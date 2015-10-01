@@ -1,0 +1,3 @@
+redirects work
+pipes work
+zombies are killed but in turn that kills the parent process, which kills the the shell. Can't figure out how to keep the parent going after killing the child.
