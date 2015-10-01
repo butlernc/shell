@@ -198,6 +198,8 @@ int do_command(char **args, int in, int out) {
         result = execvp(args[0], args);
 
         exit(-1);
+    }else{
+        print("parent process \n");
     }
     return result;
 }
