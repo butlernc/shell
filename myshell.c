@@ -113,7 +113,7 @@ int internal_command(char **args) {
  */
 int do_command(char **args, int in, int out) {
     char *input_filename, *output_filename;
-    printf("here");
+    printf("here \n");
     // Check for redirected input
     int input = redirect_input(args, &input_filename);
 
