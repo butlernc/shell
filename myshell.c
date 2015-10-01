@@ -177,15 +177,14 @@ int do_command(char **args, int in, int out, int pipe) {
         // // Set up redirection in the child process
         
         if(pipe) {
-            if(out != 1) { //standard out
-                close(1);
-                dup(out);
+            if(out != 1) {
+                dup2(out, 1);
+                close(out);
             }
             if(in != 0) {
-                close(0);
-                dup(in);
+                dup2(in, 0); 
+                close(in);
             }
-
         }
 
         FILE* fp;
