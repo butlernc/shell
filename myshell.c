@@ -240,7 +240,7 @@ int do_command(char **args, int in, int out, int pipe) {
             dup2(in, 0); 
             close(in);
         }
-        printf("output name: %s \n", output_filename);
+        
         if(input)
             freopen(input_filename, "r", stdin);
         if(output)
