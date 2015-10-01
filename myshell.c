@@ -64,9 +64,7 @@ main() {
             execute_pipe(args, block);
         }
 
-        printf("starting command \n");
         child_id = do_command(args, 0, 0);
-        printf("finished command \n");
         if(child_id < 0) {
             printf("syntax error\n");
             continue;
@@ -77,9 +75,6 @@ main() {
             printf("Waiting for child, pid = %d\n", child_id);
             result = waitpid(child_id, &status, 0);
         }
-
-        printf("finished while \n"); 
-
     }
 }
 
@@ -176,7 +171,7 @@ int do_command(char **args, int in, int out) {
         perror("Error ENOMEM: ");
         return child_id;
     }
-    printf("child: %d \n", child_id);
+
     if(child_id == 0) {
         // // Set up redirection in the child process
         // if(out != 1) { //standard out
@@ -187,17 +182,15 @@ int do_command(char **args, int in, int out) {
             dup2(in, 0); 
             close(in);
         }
-        printf("in: %d, out: %d, append: %d \n", input, output, append);
+        
         if(input)
             freopen(input_filename, "r", stdin);
         if(output)
             freopen(output_filename, "w+", stdout);
         if(append)
             freopen(output_filename, "a", stdout);
-        printf("%s \n", args[0]);
         // Execute the command
         result = execvp(args[0], args);
-        printf("results: %d \n", result);
 
         exit(-1);
     }else{
