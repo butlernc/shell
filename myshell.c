@@ -352,5 +352,7 @@ int check_append(char **args, char **output_filename) {
 }
 
 void delete_zombies(void) {
-    while (waitpid(-1, NULL, WNOHANG) > 0){}
+    while (waitpid(-1, NULL, WNOHANG) > 0){
+        printf("KILLED");
+    }
 }
