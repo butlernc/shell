@@ -211,7 +211,7 @@ int do_command(char **args, int in, int out, int pipe, int block) {
     pid_t child_id;
 
     if(block == 0) { //watch out for the zombies
-        
+        printf("& was called");
         sa.sa_handler = delete_zombies;
         memset(&sa, 0, sizeof(sa));
 
