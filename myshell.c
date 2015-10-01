@@ -184,7 +184,7 @@ int do_command(char **args, int in, int out) {
         //     close(in);
         // }
 
-        printf("append: %d \n", append);
+        printf("args: %s \n", args[1]);
 
         FILE* fp;
         if(input) {
