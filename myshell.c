@@ -191,6 +191,7 @@ int do_command(char **args, int in, int out) {
         if(output)
             freopen(output_filename, "w+", stdout);
         if(append)
+            printf("here \n");
             freopen(output_filename, "a", stdout);
 
         // Execute the command
