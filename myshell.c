@@ -158,9 +158,46 @@ int do_command(char **args, int in, int out) {
         printf("Redirecting output to: %s\n", output_filename);
         break;
     }
+
+    pid_t child_id;
     int result;
-    result = execvp(args[0], args);
-    printf("%d \n", result);
+
+    // Fork the child process
+    child_id = fork();
+
+    // Check for errors in fork()
+    switch(child_id) {
+    case EAGAIN:
+        perror("Error EAGAIN: ");
+        return child_id;
+    case ENOMEM:
+        perror("Error ENOMEM: ");
+        return child_id;
+    }
+
+    if(child_id == 0) {
+        // Set up redirection in the child process
+        if(out != 1) { //standard out
+            dup2(out, 1);
+            close(out);
+        }
+        if(in != 0) {
+            dup2(in, 0); 
+            close(in);
+        }
+
+        if(input)
+            freopen(input_filename, "r", stdin);
+        if(output)
+            freopen(output_filename, "w+", stdout);
+        if(append)
+            freopen(output_filename, "a", stdout);
+
+        // Execute the command
+        result = execvp(args[0], args);
+
+        exit(-1);
+    }
     return result;
 }
 
