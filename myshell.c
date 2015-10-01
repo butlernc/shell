@@ -194,10 +194,10 @@ int do_command(char **args, int in, int out) {
         if(output)
             freopen(output_filename, "w+", stdout);
         if(append)
-            printf("here \n");
             freopen(output_filename, "a", stdout);
 
         printf("%s \n", args);
+        printf("")
         // Execute the command
         result = execvp(args[0], args);
 
