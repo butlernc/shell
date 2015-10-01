@@ -64,6 +64,7 @@ main() {
             execute_pipe(args, block);
         }
 
+        printf("starting command \n");
         child_id = do_command(args, 0, 0);
         if(child_id < 0) {
             printf("syntax error\n");
