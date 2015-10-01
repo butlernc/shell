@@ -173,6 +173,7 @@ int do_command(char **args, int in, int out) {
     }
 
     if(child_id == 0) {
+        printf("pid ID: %d \n", getpid());
         // // Set up redirection in the child process
         // if(out != 1) { //standard out
         //     dup2(out, 1);
