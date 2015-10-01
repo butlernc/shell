@@ -72,11 +72,11 @@ main() {
             continue;
         }
 
-        // Wait for the child process to complete, if necessary
-        // if(block) {
-        //     printf("Waiting for child, pid = %d\n", child_id);
-        //     result = waitpid(child_id, &status, 0);
-        // }
+        Wait for the child process to complete, if necessary
+        if(block) {
+            printf("Waiting for child, pid = %d\n", child_id);
+            result = waitpid(child_id, &status, 0);
+        }
 
         printf("finished while \n"); 
 
@@ -197,10 +197,11 @@ int do_command(char **args, int in, int out) {
         printf("%s \n", args[0]);
         // Execute the command
         result = execvp(args[0], args);
+        printf("results: %d \n", results);
 
         exit(-1);
     }else{
-        printf("parent process \n");
+        return child_id;
     }
     return result;
 }
