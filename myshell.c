@@ -194,11 +194,11 @@ int do_command(char **args, int in, int out) {
             freopen(output_filename, "w+", stdout);
         if(append)
             freopen(output_filename, "a", stdout);
-        
+
         // Execute the command
         result = execvp(args[0], args);
 
-        exit(0);
+        exit(-1);
     }else{
         printf("parent process \n");
     }
