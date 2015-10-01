@@ -42,7 +42,10 @@ main() {
     char *output_filename;
     char *input_filename;
 
+    // Set up the signal handler
+    //sigset(SIGCHLD, sig_handler);
 
+    // Loop forever
     while(1) {
 
         // Print out the prompt and get the input
@@ -56,26 +59,67 @@ main() {
         // Check for internal shell commands, such as exit
         if(internal_command(args))
             continue;
-
+        
+        
         // Check for an ampersand
         int block = should_block(args);
 
         if(check_for_pipes(args)) {
-            execute_pipe(args, block);
+    
+            int in = 0;
+            
+            char **tmp_args = args;
+            char **ptr;
+            // loop over args, set each | to NULL
+            for(ptr = args; *ptr != NULL; ptr++) {
+                //printf("tmpargs[0]: %s [1]: %s [2]: %s\n", tmp_args[0], tmp_args[1], tmp_args[2]);
+                if(strcmp(*ptr, "|") == 0) {
+                    free(*ptr);
+                    *ptr = NULL;
+                    // do stuff with tmp_args as your new "args"
+                    int pipefd[2];
+                    pipe(pipefd);
+                    
+                    child_id = do_command(tmp_args, in, pipefd[1]);
+                    close(pipefd[1]);
+                    if(child_id < 0) {
+                        printf("syntax error\n");
+                        continue;
+                    }    
+                    in = pipefd[0];
+                    tmp_args = ptr + 1;
+                }
+            }
+            //printf("tmpargs[0]: %s [1]: %s\n", tmp_args[0], tmp_args[1]);
+            child_id = do_command(tmp_args, in, 1); 
+            if(child_id < 0) {
+                printf("syntax error\n");
+                continue;
+            }    
+        } else {
+            child_id = do_command(args, 0, 0);
+            if(child_id < 0) {
+                printf("syntax error\n");
+                continue;
+            }    
         }
 
-        child_id = do_command(args, 0, 0, 0);
-        if(child_id < 0) {
-            printf("syntax error\n");
-            continue;
-        }
-
-        //Wait for the child process to complete, if necessary
+        // Wait for the child process to complete, if necessary
         if(block) {
             printf("Waiting for child, pid = %d\n", child_id);
             result = waitpid(child_id, &status, 0);
         }
     }
+}
+
+int check_for_pipes(char **args) {
+    int i;
+    for(i = 0; args[i] != NULL; i++) {
+        if(strcmp(args[i], "|") == 0) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 /*
@@ -111,6 +155,7 @@ int internal_command(char **args) {
  */
 int do_command(char **args, int in, int out, int pipe) {
     char *input_filename, *output_filename;
+
     // Check for redirected input
     int input = redirect_input(args, &input_filename);
 
@@ -155,9 +200,9 @@ int do_command(char **args, int in, int out, int pipe) {
         printf("Redirecting output to: %s\n", output_filename);
         break;
     }
-
-    pid_t child_id;
+  
     int result;
+    pid_t child_id;
 
     // Fork the child process
     child_id = fork();
@@ -173,12 +218,9 @@ int do_command(char **args, int in, int out, int pipe) {
     }
 
     if(child_id == 0) {
-
-        // // Set up redirection in the child process
-        
+        // Set up redirection in the child process
         if(pipe) {
             if(out != 1) {
-                printf("pipe(in) == standardout \n");
                 dup2(out, 1);
                 close(out);
             }
@@ -188,84 +230,20 @@ int do_command(char **args, int in, int out, int pipe) {
             }
         }
 
-        FILE* fp;
-        if(input) {
-            fp=freopen(input_filename, "r", stdin);
-        }           
-        if(output) {
-            fp=freopen(output_filename, "w+", stdout);
-        }
-        if(append) {
-            fp=freopen(output_filename, "a+", stdout);
-        }
+        if(input)
+            freopen(input_filename, "r", stdin);
+        if(output)
+            freopen(output_filename, "w+", stdout);
+        if(append)
+            freopen(output_filename, "a", stdout);
 
         // Execute the command
         result = execvp(args[0], args);
-        if(pipe) {
-            if(out != 1) {
-                close(out);
-            }
-        }    
-        fclose(fp);
 
         exit(-1);
-
-    }else{
-        return child_id;
     }
-    return result;
-}
-
-int execute_pipe(char **args, int block) {
-    printf("excuting_pipe \n");
-        int in = 0;
-    int child_id = 0;
-    char **tmp_args = args;
-    char **ptr;
-    // loop over args, set each | to NULL
-    for(ptr = args; *ptr != NULL; ptr++) {
-        printf("tmpargs[0]: %s [1]: %s [2]: %s\n", tmp_args[0], tmp_args[1], tmp_args[2]);
-        if(strcmp(*ptr, "|") == 0) {
-            free(*ptr);
-            *ptr = NULL;
-            // do stuff with tmp_args as your new "args"
-            int pipefd[2];
-            pipe(pipefd);
-            child_id = do_command(tmp_args, in, pipefd[1], 1);
-
-
-            printf("Waiting for child, pid = %d\n", child_id);
-            int status;
-            close(pipefd[1]);
-            waitpid(child_id, &status, 0);
-            
-
-            if(child_id < 0) {
-                printf("syntax error\n");
-                continue;
-            }    
-            in = pipefd[0];
-            tmp_args = ptr + 1;
-        }
-    }
-
-    printf("tmpargs[0]: %s [1]: %s\n", tmp_args[0], tmp_args[1]);
-    child_id = do_command(tmp_args, in, 1, 1); 
-    if(child_id < 0) {
-        printf("syntax error\n");
-    }
-
+    
     return child_id;
-}
-
-int check_for_pipes(char **args) {
-    int i;
-    for(i = 0; args[i] != NULL; i++) {
-        if(strcmp(args[i], "|") == 0) {
-            return 1;
-        }
-    }
-    return 0;
 }
 
 /*
@@ -347,7 +325,6 @@ int check_append(char **args, char **output_filename) {
             // get filename
             if(args[i+1] != NULL) {
                 *output_filename = args[i+1];
-                printf("output: %s \n", *output_filename);
             } else {
                 return -1;
             }
@@ -356,9 +333,13 @@ int check_append(char **args, char **output_filename) {
             for(j = i - 1; args[j-1] != NULL; j++) {
                 args[j] = args[j+2];
             }
-            printf("args: %s \n", args[1]);
+            
             return 1;
         }
     }
     return 0;
+}
+
+int execute_pipe(char **args, int block, int input, char *input_filename, int output, char *output_filename) {
+    
 }
