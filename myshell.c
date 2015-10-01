@@ -75,7 +75,9 @@ main() {
         if(block) {
             printf("Waiting for child, pid = %d\n", child_id);
             result = waitpid(child_id, &status, 0);
-        } 
+        }
+
+        printf("finished while \n"); 
 
     }
 }
