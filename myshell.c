@@ -160,7 +160,7 @@ int do_command(char **args, int in, int out) {
     }
     int result;
     result = execvp(args[0], args);
-    
+    printf("%d \n", result);
     return result;
 }
 
