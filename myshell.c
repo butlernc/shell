@@ -43,7 +43,7 @@ main() {
     char *input_filename;
 
 
-  while(1) {
+    while(1) {
 
         // Print out the prompt and get the input
         printf("prompt->");
@@ -157,48 +157,10 @@ int do_command(char **args, int in, int out) {
         printf("Redirecting output to: %s\n", output_filename);
         break;
     }
-  
     int result;
-    pid_t child_id;
-
-    // Fork the child process
-    child_id = fork();
-
-    // Check for errors in fork()
-    switch(child_id) {
-    case EAGAIN:
-        perror("Error EAGAIN: ");
-        return child_id;
-    case ENOMEM:
-        perror("Error ENOMEM: ");
-        return child_id;
-    }
-
-    if(child_id == 0) {
-        // Set up redirection in the child process
-        if(out != 1) {
-            dup2(out, 1);
-            close(out);
-        }
-        if(in != 0) {
-            dup2(in, 0); 
-            close(in);
-        }
-
-        if(input)
-            freopen(input_filename, "r", stdin);
-        if(output)
-            freopen(output_filename, "w+", stdout);
-        if(append)
-            freopen(output_filename, "a", stdout);
-
-        // Execute the command
-        result = execvp(args[0], args);
-
-        exit(-1);
-    }
+    result = execvp(args[0], args);
     
-    return child_id;
+    return result;
 }
 
 int execute_pipe(char **args, int block) {
@@ -227,6 +189,7 @@ int execute_pipe(char **args, int block) {
             tmp_args = ptr + 1;
         }
     }
+
     //printf("tmpargs[0]: %s [1]: %s\n", tmp_args[0], tmp_args[1]);
     child_id = do_command(tmp_args, in, 1); 
     if(child_id < 0) {
@@ -294,6 +257,7 @@ int redirect_output(char **args, char **output_filename) {
             // Get the filename 
             if(args[i+1] != NULL) {
                 *output_filename = args[i+1];
+                printf(output_filename);
             } else {
                 return -1;
             }
