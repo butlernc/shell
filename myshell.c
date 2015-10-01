@@ -178,6 +178,7 @@ int do_command(char **args, int in, int out, int pipe) {
         
         if(pipe) {
             if(out != 1) {
+                printf("pipe(in) == standardout \n");
                 dup2(1, out);
                 //close(out);
             }
