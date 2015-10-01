@@ -41,6 +41,7 @@ main() {
     int status;
     char *output_filename;
     char *input_filename;
+    struct sigaction sa;
 
     // Set up the signal handler
     //sigset(SIGCHLD, sig_handler);
@@ -108,6 +109,13 @@ main() {
         if(block) {
             printf("Waiting for child, pid = %d\n", child_id);
             result = waitpid(child_id, &status, 0);
+        }else{
+            sigfillset(&sa.sa_mask);
+            sa.sa_handler = delete_zombies;
+            sa.sa_flags = 0;
+            sigaction(SIGCHLD, &sa, NULL);
+ 
+            sigsetjmp(env, 1);
         }
     }
 }
@@ -237,8 +245,8 @@ int do_command(char **args, int in, int out, int pipe) {
 
         result = execvp(args[0], args);
 
-        exit(-1);
-
+        exit(1);
+printf("args: %s \n", args[1]);
     }else {
         return child_id;
     }
@@ -340,6 +348,15 @@ int check_append(char **args, char **output_filename) {
     return 0;
 }
 
-int execute_pipe(char **args, int block, int input, char *input_filename, int output, char *output_filename) {
-    
+void delete_zombies(void)
+{
+    pid_t kidpid;
+    int status;
+ 
+    printf("Inside zombie deleter:  ");
+    while ((kidpid = waitpid(-1, &status, WNOHANG)) > 0)
+    {
+         printf("Child %ld terminated\n", kidpid);
+    }
+    siglongjmp(env,1);
 }

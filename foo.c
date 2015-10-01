@@ -1,6 +1,6 @@
-int execute_pipe() {
+int execute_pipe(char** args, int* amount) {
 	//fd[0] is for writing, fd[1] is for reading
-	int fd[2];
-	pipe(fd);
-	
+	for(int i = 0; i <= amount; i++) {//amount: pipes in args
+		
+	}
 }
