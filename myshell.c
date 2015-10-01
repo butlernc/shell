@@ -179,11 +179,11 @@ int do_command(char **args, int in, int out, int pipe) {
         if(pipe) {
             if(out != 1) {
                 printf("pipe(in) == standardout \n");
-                dup2(1, out);
+                dup2(out, 1);
                 //close(out);
             }
             if(in != 0) {
-                dup2(0, in); 
+                dup2(in, 0); 
                 //close(in);
             }
         }
@@ -231,7 +231,6 @@ int execute_pipe(char **args, int block) {
             // do stuff with tmp_args as your new "args"
             int pipefd[2];
             pipe(pipefd);
-            printf("pipe_fd[0]: %d", pipefd[0]);
             child_id = do_command(tmp_args, in, pipefd[1], 1);
 
 
