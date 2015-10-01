@@ -246,7 +246,7 @@ int do_command(char **args, int in, int out, int pipe) {
         return child_id;
     }
 
-    return results;
+    return result;
 }
 
 /*
