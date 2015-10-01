@@ -175,14 +175,18 @@ int do_command(char **args, int in, int out, int pipe) {
     if(child_id == 0) {
 
         // // Set up redirection in the child process
-        // if(out != 1) { //standard out
-        //     dup2(out, 1);
-        //     close(out);
-        // }
-        // if(in != 0) {
-        //     dup2(in, 0); 
-        //     close(in);
-        // }
+        
+        if(pipe) {
+            if(out != 1) { //standard out
+                dup2(out, 1);
+                close(out);
+            }
+            if(in != 0) {
+                dup2(in, 0); 
+                close(in);
+            }
+
+        }
 
         FILE* fp;
         if(input) {
@@ -197,17 +201,14 @@ int do_command(char **args, int in, int out, int pipe) {
 
         // Execute the command
         result = execvp(args[0], args);
-
-        if(pipe) { //this command used a pipe
-            close(fd[0])
-        }
             
         fclose(fp);
 
         exit(0);
+
     }else{
-        if(pipe) { //this command used a pipe
-            close(fd[1]);
+        if(pipe) {
+            close(out);
         }
         return child_id;
     }
