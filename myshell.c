@@ -200,7 +200,7 @@ int do_command(char **args, int in, int out) {
         // Execute the command
         result = execvp(args[0], args);
 
-        fclose(fp)
+        fclose(fp);
 
         exit(0);
     }else{
