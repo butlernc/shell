@@ -183,6 +183,9 @@ int do_command(char **args, int in, int out) {
         //     dup2(in, 0); 
         //     close(in);
         // }
+
+        printf("append: %d \n", append);
+
         FILE* fp;
         if(input) {
             fp=freopen(input_filename, "r", stdin);
@@ -192,7 +195,6 @@ int do_command(char **args, int in, int out) {
         }
         if(append) {
             fp=freopen(output_filename, "a+", stdout);
-
         }
 
         // Execute the command
