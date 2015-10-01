@@ -80,7 +80,7 @@ main() {
                     int pipefd[2];
                     pipe(pipefd);
                     
-                    child_id = do_command(tmp_args, in, pipefd[1]);
+                    child_id = do_command(tmp_args, in, pipefd[1], 1);
                     close(pipefd[1]);
                     if(child_id < 0) {
                         printf("syntax error\n");
@@ -91,7 +91,7 @@ main() {
                 }
             }
             //printf("tmpargs[0]: %s [1]: %s\n", tmp_args[0], tmp_args[1]);
-            child_id = do_command(tmp_args, in, 1); 
+            child_id = do_command(tmp_args, in, 1, 1); 
             if(child_id < 0) {
                 printf("syntax error\n");
                 continue;
