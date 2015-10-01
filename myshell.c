@@ -199,7 +199,7 @@ int do_command(char **args, int in, int out) {
 
         exit(-1);
     }else{
-        print("parent process \n");
+        printf("parent process \n");
     }
     return result;
 }
