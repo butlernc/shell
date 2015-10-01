@@ -184,7 +184,7 @@ int do_command(char **args, int in, int out, int pipe) {
             }
             if(in != 0) {
                 dup2(in, 0); 
-                //close(in);
+                close(in);
             }
         }
 
