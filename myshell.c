@@ -227,7 +227,7 @@ int do_command(char **args, int in, int out, int pipe) {
             dup2(in, 0); 
             close(in);
         }
-        printf("args: %s \n", args[1]);
+        printf("output name: %s \n", output_filename);
         if(input)
             freopen(input_filename, "r", stdin);
         if(output)
@@ -235,8 +235,6 @@ int do_command(char **args, int in, int out, int pipe) {
         if(append)
             freopen(output_filename, "a", stdout);
 
-        // Execute the command
-        printf("args: %s \n", args[1]);
         result = execvp(args[0], args);
 
         exit(-1);
