@@ -178,12 +178,12 @@ int do_command(char **args, int in, int out, int pipe) {
         
         if(pipe) {
             if(out != 1) { //standard out
-                dup2(out, 1);
-                close(out);
+                close(1);
+                dup(out);
             }
             if(in != 0) {
-                dup2(in, 0); 
-                close(in);
+                close(0);
+                dup(in);
             }
 
         }
