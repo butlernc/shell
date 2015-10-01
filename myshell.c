@@ -28,7 +28,6 @@ void sig_handler(int signal) {
     printf("Wait returned %d\n", result);
 }
 
-sigjmp_buf env;
 struct sigaction sa;
 void delete_zombies(void);
 
@@ -49,16 +48,16 @@ main() {
     char *input_filename;
     
     // Set up the signal handler
-    //sigset(SIGCHLD, sig_handler);
+    sigset(SIGCHLD, sig_handler);
 
 
-    memset(&sa, 0, sizeof(sa));
-    sa.sa_handler = delete_zombies;
-    
-    if(sigaction(SIGCHLD, &sa, 0)) {
-        perror("sigaction");
-        return 1;
-    }
+    // memset(&sa, 0, sizeof(sa));
+    // sa.sa_handler = delete_zombies;
+
+    // if(sigaction(SIGCHLD, &sa, 0)) {
+    //     perror("sigaction");
+    //     return 1;
+    // }
 
     // Loop forever
     while(1) {
@@ -253,7 +252,6 @@ int do_command(char **args, int in, int out, int pipe, int block) {
         result = execvp(args[0], args);
 
         exit(1);
-printf("args: %s \n", args[1]);
     }else {
         
         return child_id;
