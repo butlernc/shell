@@ -72,7 +72,7 @@ main() {
             continue;
         }
 
-        Wait for the child process to complete, if necessary
+        //Wait for the child process to complete, if necessary
         if(block) {
             printf("Waiting for child, pid = %d\n", child_id);
             result = waitpid(child_id, &status, 0);
