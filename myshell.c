@@ -210,7 +210,7 @@ int do_command(char **args, int in, int out, int pipe, int block) {
     int result;
     pid_t child_id;
 
-    if(block == 0) {
+    if(block == 0) { //watch out for the zombies
         sigfillset(&sa.sa_mask);
         sa.sa_handler = delete_zombies;
         sa.sa_flags = 0;
@@ -361,10 +361,6 @@ void delete_zombies(void)
     pid_t kidpid;
     int status;
  
-    printf("Inside zombie deleter:  ");
-    while ((kidpid = waitpid(-1, &status, WNOHANG)) > 0)
-    {
-         printf("Child %ld terminated\n", kidpid);
-    }
+    kidpid = waitpid(-1, &status, WNOHANG);
     siglongjmp(env,1);
 }
