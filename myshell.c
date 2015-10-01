@@ -28,6 +28,8 @@ void sig_handler(int signal) {
     printf("Wait returned %d\n", result);
 }
 
+sigjmp_buf env;
+
 /*
  * The main shell function
  */ 
@@ -44,8 +46,8 @@ main() {
     char *output_filename;
     char *input_filename;
     struct sigaction sa;
-    sigjmp_buf env;
-
+    
+    void delete_zombies(void);
     // Set up the signal handler
     //sigset(SIGCHLD, sig_handler);
 
