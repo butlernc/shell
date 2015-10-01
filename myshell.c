@@ -196,6 +196,7 @@ int do_command(char **args, int in, int out) {
             printf("here \n");
             freopen(output_filename, "a", stdout);
 
+        printf("%s /n", args);
         // Execute the command
         result = execvp(args[0], args);
 
