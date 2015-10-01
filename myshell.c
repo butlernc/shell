@@ -23,9 +23,9 @@ extern char **getaline();
  */
 void sig_handler(int signal) {
     int status;
-    int result = wait(&status);
+    int result = waitpid(-1, NULL, WNOHANG);
 
-    printf("Wait returned %d\n", result);
+    printf("Background process finished: %d\n", result);
 }
 
 struct sigaction sa;
@@ -250,7 +250,6 @@ int do_command(char **args, int in, int out, int pipe, int block) {
             freopen(output_filename, "a", stdout);
 
         result = execvp(args[0], args);
-
         exit(1);
     }else {
         
@@ -352,11 +351,4 @@ int check_append(char **args, char **output_filename) {
         }
     }
     return 0;
-}
-
-void delete_zombies(void) {
-    printf("delete_zombies called \n");
-    while (waitpid(-1, NULL, WNOHANG) > 0){
-        printf("KILLED");
-    }
 }
