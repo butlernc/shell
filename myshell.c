@@ -333,7 +333,7 @@ int check_append(char **args, char **output_filename) {
             for(j = i - 1; args[j-1] != NULL; j++) {
                 args[j] = args[j+2];
             }
-            printf("args: %s \n", args);
+            printf("args: %s \n", args[0]);
             return 1;
         }
     }
