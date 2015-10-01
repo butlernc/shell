@@ -207,9 +207,6 @@ int do_command(char **args, int in, int out, int pipe) {
         exit(0);
 
     }else{
-        if(pipe) {
-            close(out);
-        }
         return child_id;
     }
     return result;
@@ -223,16 +220,16 @@ int execute_pipe(char **args, int block) {
     char **ptr;
     // loop over args, set each | to NULL
     for(ptr = args; *ptr != NULL; ptr++) {
-        //printf("tmpargs[0]: %s [1]: %s [2]: %s\n", tmp_args[0], tmp_args[1], tmp_args[2]);
+        printf("tmpargs[0]: %s [1]: %s [2]: %s\n", tmp_args[0], tmp_args[1], tmp_args[2]);
         if(strcmp(*ptr, "|") == 0) {
             free(*ptr);
             *ptr = NULL;
             // do stuff with tmp_args as your new "args"
             int pipefd[2];
             pipe(pipefd);
-            
+
             child_id = do_command(tmp_args, in, pipefd[1], 1);
-            close(pipefd[1]);
+            //close(pipefd[1]);
             if(child_id < 0) {
                 printf("syntax error\n");
                 continue;
