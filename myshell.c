@@ -174,7 +174,7 @@ int do_command(char **args, int in, int out) {
         perror("Error ENOMEM: ");
         return child_id;
     }
-
+    printf("child: %d \n", child_id);
     if(child_id == 0) {
         // // Set up redirection in the child process
         if(out != 1) { //standard out
