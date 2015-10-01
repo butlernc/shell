@@ -211,12 +211,7 @@ int do_command(char **args, int in, int out, int pipe, int block) {
     pid_t child_id;
 
     if(block == 0) { //watch out for the zombies
-        sigfillset(&sa.sa_mask);
         sa.sa_handler = delete_zombies;
-        sa.sa_flags = 0;
-        sigaction(SIGCHLD, &sa, NULL);
-
-        sigsetjmp(env, 1);
     }
 
     // Fork the child process
@@ -356,11 +351,6 @@ int check_append(char **args, char **output_filename) {
     return 0;
 }
 
-void delete_zombies(void)
-{
-    pid_t kidpid;
-    int status;
- 
-    kidpid = waitpid(-1, &status, WNOHANG);
-    siglongjmp(env,1);
+void delete_zombies(void) {
+    while (waitpid(-1, NULL, WNOHANG) > 0){}
 }
