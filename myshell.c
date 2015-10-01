@@ -228,13 +228,13 @@ int execute_pipe(char **args, int block) {
             int pipefd[2];
             pipe(pipefd);
 
-            child_id = do_command(tmp_args, in, pipefd[1], 1);
+            child_id = do_command(tmp_args, in, pipefd[0], 1);
             //close(pipefd[1]);
             if(child_id < 0) {
                 printf("syntax error\n");
                 continue;
             }    
-            in = pipefd[0];
+            in = pipefd[1];
             tmp_args = ptr + 1;
         }
     }
