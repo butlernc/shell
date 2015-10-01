@@ -116,7 +116,6 @@ int internal_command(char **args) {
  */
 int do_command(char **args, int in, int out) {
     char *input_filename, *output_filename;
-    printf("here \n");
     // Check for redirected input
     int input = redirect_input(args, &input_filename);
 
@@ -197,7 +196,7 @@ int do_command(char **args, int in, int out) {
             freopen(output_filename, "a", stdout);
 
         printf("%s \n", args);
-        printf("")
+        printf("here \n");
         // Execute the command
         result = execvp(args[0], args);
 
