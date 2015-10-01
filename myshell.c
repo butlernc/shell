@@ -193,7 +193,7 @@ int do_command(char **args, int in, int out) {
         printf("append: %d \n", append);
         result = execvp(args[0], args);
 
-        exit(-1);
+        exit(0);
     }else{
         return child_id;
     }
