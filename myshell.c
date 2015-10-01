@@ -176,15 +176,15 @@ int do_command(char **args, int in, int out) {
     }
 
     if(child_id == 0) {
-        // Set up redirection in the child process
-        if(out != 1) { //standard out
-            dup2(out, 1);
-            close(out);
-        }
-        if(in != 0) {
-            dup2(in, 0); 
-            close(in);
-        }
+        // // Set up redirection in the child process
+        // if(out != 1) { //standard out
+        //     dup2(out, 1);
+        //     close(out);
+        // }
+        // if(in != 0) {
+        //     dup2(in, 0); 
+        //     close(in);
+        // }
 
         if(input)
             freopen(input_filename, "r", stdin);
