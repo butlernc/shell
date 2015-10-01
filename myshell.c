@@ -86,7 +86,7 @@ main() {
                     int pipefd[2];
                     pipe(pipefd);
                     
-                    child_id = do_command(tmp_args, in, pipefd[1], 1);
+                    child_id = do_command(tmp_args, in, pipefd[1], 1, block);
                     close(pipefd[1]);
                     if(child_id < 0) {
                         printf("syntax error\n");
@@ -97,13 +97,13 @@ main() {
                 }
             }
             //printf("tmpargs[0]: %s [1]: %s\n", tmp_args[0], tmp_args[1]);
-            child_id = do_command(tmp_args, in, 1, 1 ); 
+            child_id = do_command(tmp_args, in, 1, 1, block); 
             if(child_id < 0) {
                 printf("syntax error\n");
                 continue;
             }    
         } else {
-            child_id = do_command(args, 0, 0);
+            child_id = do_command(args, 0, 0, 0, block);
             if(child_id < 0) {
                 printf("syntax error\n");
                 continue;
@@ -114,13 +114,6 @@ main() {
         if(block) {
             printf("Waiting for child, pid = %d\n", child_id);
             result = waitpid(child_id, &status, 0);
-        }else{
-            sigfillset(&sa.sa_mask);
-            sa.sa_handler = delete_zombies;
-            sa.sa_flags = 0;
-            sigaction(SIGCHLD, &sa, NULL);
- 
-            sigsetjmp(env, 1);
         }
     }
 }
@@ -166,7 +159,7 @@ int internal_command(char **args) {
 /* 
  * Do the command
  */
-int do_command(char **args, int in, int out, int pipe) {
+int do_command(char **args, int in, int out, int pipe, int block) {
     char *input_filename, *output_filename;
 
     // Check for redirected input
@@ -217,6 +210,15 @@ int do_command(char **args, int in, int out, int pipe) {
     int result;
     pid_t child_id;
 
+    if(block == 0) {
+        sigfillset(&sa.sa_mask);
+        sa.sa_handler = delete_zombies;
+        sa.sa_flags = 0;
+        sigaction(SIGCHLD, &sa, NULL);
+
+        sigsetjmp(env, 1);
+    }
+
     // Fork the child process
     child_id = fork();
 
@@ -240,7 +242,7 @@ int do_command(char **args, int in, int out, int pipe) {
             dup2(in, 0); 
             close(in);
         }
-        
+
         if(input)
             freopen(input_filename, "r", stdin);
         if(output)
@@ -253,6 +255,7 @@ int do_command(char **args, int in, int out, int pipe) {
         exit(1);
 printf("args: %s \n", args[1]);
     }else {
+        kill(0, SIGKILL);
         return child_id;
     }
 
