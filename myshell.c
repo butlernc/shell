@@ -173,7 +173,7 @@ int do_command(char **args, int in, int out) {
     }
 
     if(child_id == 0) {
-        
+
         // // Set up redirection in the child process
         // if(out != 1) { //standard out
         //     dup2(out, 1);
@@ -194,8 +194,6 @@ int do_command(char **args, int in, int out) {
 
         }
 
-
-        printf("append: %d \n", append);
         // Execute the command
         result = execvp(args[0], args);
 
