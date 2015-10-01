@@ -184,8 +184,6 @@ int do_command(char **args, int in, int out) {
         //     close(in);
         // }
 
-        printf("args: %s \n", args[1]);
-
         FILE* fp;
         if(input) {
             fp=freopen(input_filename, "r", stdin);
@@ -334,7 +332,6 @@ int check_append(char **args, char **output_filename) {
             // get filename
             if(args[i+1] != NULL) {
                 *output_filename = args[i+1];
-                free(args[i+1]);
                 printf("output: %s \n", *output_filename);
             } else {
                 return -1;
